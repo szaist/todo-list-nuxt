@@ -2,5 +2,5 @@
 
 </script>
 <template>
-    
+    <Button>Hello</Button>
 </template>
