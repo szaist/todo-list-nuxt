@@ -1,9 +1,10 @@
 import { CreateUserRequest } from "~/app/contracts/auth/CreateUserRequest";
+import { LoginUserRequest } from "~/app/contracts/auth/LoginUserRequest";
 
 export default defineEventHandler(async (event) => {
     const storage = useStorage('db')
 
-    const body = await readBody<CreateUserRequest>(event)
+    const body = await readBody<LoginUserRequest>(event)
 
     //TODO: Body validation
 
@@ -13,19 +14,15 @@ export default defineEventHandler(async (event) => {
 
     const user = users.find(u => u.email === body.email)
 
-    if(user) {
+    if(!user || user.password !== body.password){
         setResponseStatus(event, 400)
+    
         return {
-            message: "Email is already in use."
-        }
+            message: "Wrong credentials."
+        } 
     }
 
-    users.push(body)
-
-    await storage.setItem("users", users)
-
     return {
-        status: 200,
-        message: 'OK'
+        token: `valid-token-${user.email}`
     }
 })
