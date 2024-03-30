@@ -10,6 +10,9 @@ export default {
     "presets/**/*.{js,vue,ts}",
   ],
   theme: {
+    container: {
+      center: true,
+    },
     extend: {
         colors: {
             'primary-50': 'rgb(var(--primary-50))',
