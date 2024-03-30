@@ -2,7 +2,8 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['nuxt-primevue', '@pinia/nuxt'],
-  css: ['~/assets/css/main.css', '~/assets/css/variables.css'],
+  css: ['~/assets/css/main.css', '~/assets/css/variables.css', 'primeicons/primeicons.css'
+  ],
   postcss: {
     plugins: {
       tailwindcss: {},
