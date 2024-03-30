@@ -3,3 +3,8 @@ export enum Priority {
     MEDIUM = "medium",
     LOW = "low",
 }
+
+export enum SIDE {
+    BEFORE,
+    AFTER
+}

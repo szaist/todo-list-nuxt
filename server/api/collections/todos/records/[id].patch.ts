@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
     const storage = useStorage('db')
 
     const id = getRouterParam(event, "id")
-    const body = readBody<UpdateTodoRequest>(event)
+    const body = await readBody<UpdateTodoRequest>(event)
 
     //TODO: Body validation
 

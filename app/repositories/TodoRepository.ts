@@ -6,7 +6,7 @@ import type { Todo } from "../models/Todo";
 export interface TodoRepository {
     create(request: CreateTodoRequest): Promise<Todo>
     list(params: Record<string, string>): Promise<ListTodoResponse>
-    patch(request: UpdateTodoRequest): Promise<Todo>
+    patch(todoId: string, request: UpdateTodoRequest): Promise<void>
     delete(todoId: string): Promise<void>
 }
 
@@ -28,10 +28,15 @@ export class TodoRepositoryAPI implements TodoRepository {
 
         return await $fetch(`/api/collections/todos/records${urlParams.size > 0 ? `?${urlParams.toString()}` : ''}`, )
     }
-    patch(request: UpdateTodoRequest): Promise<Todo> {
-        throw new Error("Method not implemented.");
+    async patch(todoId: string, request: UpdateTodoRequest): Promise<void> {
+        return await $fetch(`/api/collections/todos/records/${todoId}`, {
+            method: 'PATCH',
+            body: request
+        })
     }
-    delete(todoId: string): Promise<void> {
-        throw new Error("Method not implemented.");
+    async delete(todoId: string): Promise<void> {
+        return await $fetch(`/api/collections/todos/records/${todoId}`, {
+            method: 'DELETE',
+        })
     }
 }
