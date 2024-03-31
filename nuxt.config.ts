@@ -14,6 +14,11 @@ export default defineNuxtConfig({
     unstyled: true,
     importPT: { from: '~/presets/lara/' } 
   },
+  runtimeConfig: {
+    public: {
+      API_URL: process.env.API_URL,
+    }
+  },
   nitro: {
     storage: {
       db: {

@@ -1,4 +1,8 @@
 <script lang="ts" setup>
+  useHead({
+    title: "TodoApp",
+  })
+
 </script>
 <template>
   <div>

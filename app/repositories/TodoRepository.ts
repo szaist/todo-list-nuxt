@@ -1,23 +1,29 @@
+import axios, { type AxiosResponse } from "axios";
 import type { CreateTodoRequest } from "../contracts/todo/CreateTodoRequest";
 import type { ListTodoResponse } from "../contracts/todo/ListTodoResponse";
 import type { UpdateTodoRequest } from "../contracts/todo/UpdateTodoRequest";
 import type { Todo } from "../models/Todo";
 
 export interface TodoRepository {
-    create(request: CreateTodoRequest): Promise<Todo>
-    list(params: Record<string, string>): Promise<ListTodoResponse>
-    patch(todoId: string, request: UpdateTodoRequest): Promise<void>
-    delete(todoId: string): Promise<void>
+    create(request: CreateTodoRequest): Promise<AxiosResponse<Todo>>
+    list(params: Record<string, string>): Promise<AxiosResponse<ListTodoResponse>>
+    patch(todoId: string, request: UpdateTodoRequest): Promise<AxiosResponse<void>>
+    delete(todoId: string): Promise<AxiosResponse<void>>
 }
 
 export class TodoRepositoryAPI implements TodoRepository {
-    async create(request: CreateTodoRequest): Promise<Todo> {
-        return await $fetch('/api/collections/todos/records', {
-            method: 'POST',
+    API_URL = ""
+
+    constructor() {
+        this.API_URL = useRuntimeConfig().public.API_URL
+    }
+
+    async create(request: CreateTodoRequest): Promise<AxiosResponse<Todo>> {
+        return await axios.post(`${this.API_URL}/collections/todos/records`, {
             body: request,
         })
     }
-    async list(params?: Record<string, string | number>): Promise<ListTodoResponse> {
+    async list(params?: Record<string, string | number>): Promise<AxiosResponse<ListTodoResponse>> {
         const urlParams = new URLSearchParams()
 
         if(params){
@@ -26,17 +32,14 @@ export class TodoRepositoryAPI implements TodoRepository {
             })
         }
 
-        return await $fetch(`/api/collections/todos/records${urlParams.size > 0 ? `?${urlParams.toString()}` : ''}`, )
+        return await axios.get(`${this.API_URL}/collections/todos/records${urlParams.size > 0 ? `?${urlParams.toString()}` : ''}`, )
     }
-    async patch(todoId: string, request: UpdateTodoRequest): Promise<void> {
-        return await $fetch(`/api/collections/todos/records/${todoId}`, {
-            method: 'PATCH',
+    async patch(todoId: string, request: UpdateTodoRequest): Promise<AxiosResponse<void>> {
+        return await axios.patch(`${this.API_URL}/collections/todos/records/${todoId}`, {
             body: request
         })
     }
-    async delete(todoId: string): Promise<void> {
-        return await $fetch(`/api/collections/todos/records/${todoId}`, {
-            method: 'DELETE',
-        })
+    async delete(todoId: string): Promise<AxiosResponse<void>> {
+        return await axios.delete(`${this.API_URL}/collections/todos/records/${todoId}`)
     }
 }

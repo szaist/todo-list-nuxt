@@ -7,7 +7,5 @@ export type ListTodoResponse = {
 
 export type Pagination = {
     currentPage: number
-    perPage: number,
-    totalCount: number
-    totalPages: number
+    perPage: number
 }

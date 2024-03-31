@@ -4,11 +4,12 @@ import type { UpdateTodoRequest } from "~/app/contracts/todo/UpdateTodoRequest";
 import type { Todo } from "~/app/models/Todo"
 import { SIDE } from "~/app/types"
 import TodoAddDialog from '~/components/TodoAddDialog.vue'
+import TodoItemSkeleton from "./skeletons/TodoItemSkeleton.vue";
 
 const todoStore = useTodoStore()
 
 const { todos } = storeToRefs(todoStore)
-
+const isLoading = ref<boolean>(true)
 const sortOptions = computed(() => ([
     { label: 'Sort by order ASC', value: '+order'},
     { label: 'Sort by order DESC', value: '-order'},
@@ -32,7 +33,9 @@ const onSortChange = async (event: DropdownChangeEvent) => {
 }
 
 onMounted(async () => {
+    isLoading.value = true
     await todoStore.fetchTodos()
+    isLoading.value = false
 })
 
 const startDrag = (event: DragEvent, item: Todo) => {
@@ -115,6 +118,20 @@ const toggleFavorite = async(todoId: string, item: UpdateTodoRequest) => {
     }
 }
 
+const nextPage = async () => {
+    isLoading.value = true
+    await todoStore.fetchNextPage()
+    isLoading.value = false
+}
+
+const prevPage = async () => {
+    isLoading.value = true
+    await todoStore.fetchPrevPage()
+    isLoading.value = false
+}
+
+const isFirstPage = computed(() => todoStore.pagination.currentPage === 1)
+
 const dialog = useDialog()
 const openAddTaskDialog = () => {
     dialog.open(TodoAddDialog, {
@@ -128,18 +145,19 @@ const openAddTaskDialog = () => {
 </script>
 <template>
     <div>
-        <DataView :value="todoStore.todos" data-key="id">
-            <template #header>
-                <div class="flex flex-col items-center md:items-stretch md:flex-row md:justify-between">
-                    <div>
-                        <h1 class="text-3xl">Tasks</h1>
-                    </div>
-                    <div class="flex flex-col items-center md:flex-row gap-4 mt-2 md:mt-0">
-                        <Dropdown v-model="sortKey" :options="sortOptions" option-label="label" @change="onSortChange"/>
-                        <Button label="Add new task" severity="info" size="small" class="ml-4" @click="openAddTaskDialog"/>
-                    </div>
-                </div>
-            </template>
+        <div class="flex flex-col items-center md:items-stretch md:flex-row md:justify-between mt-4">
+            <div>
+                <h1 class="text-3xl dark:text-white text-black">Tasks</h1>
+            </div>
+            <div class="flex flex-col items-center md:flex-row gap-4 mt-2 md:mt-0">
+                <Dropdown v-model="sortKey" :options="sortOptions" option-label="label" @change="onSortChange" :disabled="isLoading"/>
+                <Button label="Add new task" severity="info" size="small" class="ml-4" @click="openAddTaskDialog" :disabled="isLoading" />
+            </div>
+        </div>
+        <div v-if="isLoading">
+            <TodoItemSkeleton v-for="i in 4"/>
+        </div>
+        <DataView v-else :value="todoStore.todos" data-key="id">
             <template #list="slotProps">
                 <template v-for="(item, index) in slotProps.items" :key="item.id">
                     <TodoItem
@@ -156,14 +174,14 @@ const openAddTaskDialog = () => {
             <template #empty>
                 <div class="flex items-center justify-center mt-4">
                     <h2 class="text-2xl">There is no task in the database</h2>
-                    
                 </div>
             </template>
-
             <template #footer>
-                
+                <div class="flex justify-between">
+                    <Button icon="pi pi-angle-left" label="Previous page" @click="prevPage" :loading="isLoading" :disabled="isFirstPage"/>
+                    <Button icon="pi pi-angle-right" label="Next page" icon-pos="right" @click="nextPage" :loading="isLoading"/>
+                </div>
             </template>
         </DataView>
-
     </div>
 </template>

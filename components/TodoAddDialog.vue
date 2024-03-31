@@ -1,8 +1,11 @@
 <script lang="ts" setup>
+import type { DynamicDialogInstance } from 'primevue/dynamicdialogoptions';
 import type { CreateTodoRequest } from '~/app/contracts/todo/CreateTodoRequest'
 import { Priority } from '~/app/types'
+import { CreateTodoValidation } from '~/app/validation/TodoValidation'
+import { ValidationError } from 'yup'
 
-const dialogRef = inject('dialogRef')
+const dialogRef = inject<Ref<DynamicDialogInstance>>('dialogRef')
 const todoStore = useTodoStore()
 const currentTodo = ref<CreateTodoRequest>({
     title: '',
@@ -16,27 +19,42 @@ const currentTodo = ref<CreateTodoRequest>({
 const isLoading = ref<boolean>(false)
 const needDeadline = ref<boolean>(false)
 
+const errors = ref<Record<string,string>>({})
+
 const priorityOptions = computed(() => Object.values(Priority))
 
 const closeDialog = () => {
-    dialogRef.value.close()
+    dialogRef?.value.close()
 }
 
 const save = async () => {
+    const todoItem: CreateTodoRequest = {
+        title: currentTodo.value.title,
+        description: currentTodo.value.description,
+        order: currentTodo.value.order,
+        priority: currentTodo.value.priority,
+        completed: currentTodo.value.completed,
+        fav: currentTodo.value.fav,
+    }
+
+    if(needDeadline.value){
+        todoItem.deadline = currentTodo.value.deadline
+    }
+
     try {
-        const todoItem: CreateTodoRequest = {
-            title: currentTodo.value.title,
-            description: currentTodo.value.description,
-            order: currentTodo.value.order,
-            priority: currentTodo.value.priority,
-            completed: currentTodo.value.completed,
-            fav: currentTodo.value.fav,
-        }
+        errors.value = {}
+        await CreateTodoValidation.validate(todoItem, { abortEarly: false})
+    } catch (error) {
+        const err = error as ValidationError
 
-        if(needDeadline.value){
-            todoItem.deadline = currentTodo.value.deadline
-        }
+        err.inner.forEach(e => {
+            const name = e.path ?? ''
+            errors.value[name] = e.message
+        })
+        return
+    }
 
+    try {
         await todoStore.createTodo(todoItem)
 
         closeDialog()
@@ -61,11 +79,13 @@ const save = async () => {
                     value: currentTodo.fav ? 'Remove from favorites' : 'Add to favorites'
                 }"
                 class="ml-2"
+                :disabled="isLoading"
             />
         </div>
         <div class="flex flex-col gap-2">
-            <label for="title">Title</label>
-            <InputText id="title" v-model="currentTodo.title" :disabled="isLoading"/>
+            <label for="title">Title*</label>
+            <InputText id="title" v-model="currentTodo.title" :disabled="isLoading" :invalid="!!errors?.title"/>
+            <InlineMessage severity="error" v-if="errors?.title">{{ errors.title }}</InlineMessage>
         </div>
         <div class="flex flex-col gap-2">
             <label for="description">Description</label>
@@ -79,19 +99,19 @@ const save = async () => {
         </div>
         <div class="flex flex-col gap-2">
             <div>
-                <Checkbox v-model="needDeadline" binary input-id="deadline"/>
+                <Checkbox v-model="needDeadline" binary input-id="deadline" :disabled="isLoading"/>
                 <label for="deadline" class="ml-2">Need deadline?</label>
             </div>
-            <Calendar v-model="currentTodo.deadline" showIcon showTime :showOnFocus="false" :disabled="!needDeadline"/>
+            <Calendar v-model="currentTodo.deadline" showIcon showTime :showOnFocus="false" :disabled="!needDeadline || isLoading"/>
         </div>
         <div class="flex flex-col">
             <label for="priority">Priority</label>
-            <Dropdown :options="priorityOptions" v-model="currentTodo.priority" id="priority"></Dropdown>
+            <Dropdown :options="priorityOptions" v-model="currentTodo.priority" id="priority" :disabled="isLoading"></Dropdown>
         </div>
         <div class="flex flex-col">
-            <label for="order">Order</label>
+            <label for="order">Order* </label>
             <div class="mt-2">
-                <InputNumber v-model="currentTodo.order" id="order" showButtons :min="1">
+                <InputNumber v-model="currentTodo.order" id="order" showButtons :min="1" :disabled="isLoading">
                     <template #incrementbuttonicon>
                         <span class="pi pi-plus text-sm" /> 
                     </template>

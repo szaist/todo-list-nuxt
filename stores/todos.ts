@@ -1,4 +1,5 @@
 import { defineStore } from "pinia"
+import type { CreateTodoRequest } from "~/app/contracts/todo/CreateTodoRequest"
 import type { Pagination } from "~/app/contracts/todo/ListTodoResponse"
 import type { UpdateTodoRequest } from "~/app/contracts/todo/UpdateTodoRequest"
 import type { Todo } from "~/app/models/Todo"
@@ -9,8 +10,6 @@ export const useTodoStore = defineStore('todos', () => {
     const pagination = ref<Pagination>({
         currentPage: 1,
         perPage: 10,
-        totalCount: 0,
-        totalPages: 0,
     })
     const todoRepository = new TodoRepositoryAPI()
 
@@ -33,12 +32,21 @@ export const useTodoStore = defineStore('todos', () => {
 
             const response = await todoRepository.list(parameters)
 
-            todos.value = response.todos
-            pagination.value = response.pagination
+            todos.value = response.data.todos
+            pagination.value.currentPage = page
 
         } catch (error) {
             console.log("FetchTodos: ", error);
         }
+    }
+
+    const fetchNextPage = async () => {
+        await fetchTodos(pagination.value.currentPage + 1)
+    }
+
+    const fetchPrevPage = async () => {
+        if(pagination.value.currentPage - 1 < 1) return
+        await fetchTodos(pagination.value.currentPage - 1)
     }
 
     const sortTodos = async (_sort?: string) => {
@@ -77,12 +85,12 @@ export const useTodoStore = defineStore('todos', () => {
         try {
             const response = await todoRepository.create(request)
 
-            todos.value.push(response)
+            todos.value.push(response.data)
 
         } catch (error) {
             console.log('createTodo: ', error);
         }
     }
 
-    return { todos, fetchTodos, patchTodo, deleteTodo, sortTodos, getTodoById, createTodo }
+    return { todos, pagination, fetchTodos, patchTodo, deleteTodo, sortTodos, getTodoById, createTodo, fetchNextPage, fetchPrevPage }
 })

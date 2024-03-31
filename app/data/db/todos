@@ -1,1 +1,152 @@
-[{"id":"3792c645-b6bb-4d63-80ac-b134876c2347","title":"Teszt titlle","description":"Teszt leírás","order":6,"priority":"low","completed":false,"deadline":"2024-03-30T19:29:46.690Z","fav":false},{"id":"e6864b74-e7a9-437c-8b1e-2e725573da2b","title":"Teszt","description":"asdasdas","order":4,"priority":"medium","completed":false,"fav":true}]
+[
+    {
+        "id": "3792c645-b6bb-4d63-80ac-b134876c2347",
+        "title": "Complete Homework Assignment",
+        "description": "Finish the math problems and write the essay for English class.",
+        "order": 1,
+        "priority": "high",
+        "completed": false,
+        "deadline": "2024-04-10T23:59:59.999Z",
+        "fav": true
+    },
+    {
+        "id": "bb3f5604-95c1-42eb-ae45-521a23dcde90",
+        "title": "Grocery Shopping",
+        "description": "Buy fruits, vegetables, milk, and bread.",
+        "order": 2,
+        "priority": "medium",
+        "completed": false,
+        "deadline": "2024-04-01T12:00:00.000Z",
+        "fav": false
+    },
+    {
+        "id": "36a8163f-9ad4-4b6a-8b49-9a4c1f6ac5ab",
+        "title": "Call Mom",
+        "description": "Check up on Mom and see how she's doing.",
+        "order": 3,
+        "priority": "low",
+        "completed": false,
+        "deadline": null,
+        "fav": false
+    },
+    {
+        "id": "f83e0735-68db-4b91-ae07-d50075c9637a",
+        "title": "Workout",
+        "description": "Go for a run or do a home workout.",
+        "order": 4,
+        "priority": "medium",
+        "completed": false,
+        "deadline": null,
+        "fav": true
+    },
+    {
+        "id": "1c6ec5a0-2a42-4ad4-8d1b-37e267c4f94d",
+        "title": "Read Chapter 3",
+        "description": "Read Chapter 3 of the novel for book club.",
+        "order": 5,
+        "priority": "high",
+        "completed": false,
+        "deadline": "2024-04-05T18:00:00.000Z",
+        "fav": false
+    },
+    {
+        "id": "2c4db907-79ae-4d84-b4bc-e82bb5a4e7fc",
+        "title": "Write Monthly Report",
+        "description": "Compile data and prepare the monthly report for the team meeting.",
+        "order": 6,
+        "priority": "high",
+        "completed": false,
+        "deadline": "2024-04-07T09:00:00.000Z",
+        "fav": false
+    },
+    {
+        "id": "fea932a2-829f-49a4-aad9-d80e4d73f92c",
+        "title": "Plan Weekend Getaway",
+        "description": "Research and book accommodations for the weekend trip.",
+        "order": 7,
+        "priority": "medium",
+        "completed": false,
+        "deadline": "2024-04-15T23:59:59.999Z",
+        "fav": true
+    },
+    {
+        "id": "6d049e3d-2a13-4f5a-8d12-9c60e8cc3d0b",
+        "title": "Update Resume",
+        "description": "Add recent achievements and experiences to the resume.",
+        "order": 8,
+        "priority": "medium",
+        "completed": false,
+        "deadline": null,
+        "fav": false
+    },
+    {
+        "id": "f0a3df32-1407-43fd-b81a-c5f4d5050b54",
+        "title": "Pay Electricity Bill",
+        "description": "Make payment for the electricity bill before the due date.",
+        "order": 9,
+        "priority": "high",
+        "completed": false,
+        "deadline": "2024-04-03T23:59:59.999Z",
+        "fav": false
+    },
+    {
+        "id": "ed65c5ad-d5d2-41e8-a828-33e8db34f94b",
+        "title": "Attend Webinar",
+        "description": "Participate in the webinar on 'Effective Time Management'.",
+        "order": 10,
+        "priority": "low",
+        "completed": false,
+        "deadline": "2024-04-12T15:00:00.000Z",
+        "fav": true
+    },
+    {
+        "id": "5986e3fd-4e12-4b15-8bb3-bfc1f97be877",
+        "title": "Water Plants",
+        "description": "Give water to all indoor and outdoor plants.",
+        "order": 11,
+        "priority": "low",
+        "completed": false,
+        "deadline": null,
+        "fav": false
+    },
+    {
+        "id": "b2d53729-12d8-43cf-b7ac-f7e93d6b41db",
+        "title": "Practice Guitar",
+        "description": "Spend 30 minutes practicing guitar scales and chords.",
+        "order": 12,
+        "priority": "medium",
+        "completed": false,
+        "deadline": null,
+        "fav": false
+    },
+    {
+        "id": "85f6c42a-5878-4c56-920e-d41f9d102b54",
+        "title": "Organize Closet",
+        "description": "Declutter and organize clothes and accessories in the closet.",
+        "order": 13,
+        "priority": "low",
+        "completed": false,
+        "deadline": null,
+        "fav": false
+    },
+    {
+        "id": "e9c03a26-2a7a-4cd5-aee2-3359f091a93c",
+        "title": "Research Investment Options",
+        "description": "Research different investment opportunities for long-term financial planning.",
+        "order": 14,
+        "priority": "high",
+        "completed": false,
+        "deadline": null,
+        "fav": true
+    },
+    {
+        "id": "b1fffbdc-b8a5-44d8-b36b-30229e77f7f3",
+        "title": "Cook Dinner",
+        "description": "Prepare a healthy dinner for the family.",
+        "order": 15,
+        "priority": "medium",
+        "completed": false,
+        "deadline": null,
+        "fav": false
+    }
+]
