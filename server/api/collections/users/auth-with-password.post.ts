@@ -2,27 +2,28 @@ import { CreateUserRequest } from "~/app/contracts/auth/CreateUserRequest";
 import { LoginUserRequest } from "~/app/contracts/auth/LoginUserRequest";
 
 export default defineEventHandler(async (event) => {
-    const storage = useStorage('db')
+  const storage = useStorage("db");
 
-    const body = await readBody<LoginUserRequest>(event)
+  const body = await readBody<LoginUserRequest>(event);
 
-    //TODO: Body validation
+  //TODO: Body validation
 
-    console.log(`Body: ${JSON.stringify(body)}`);
-    
-    const users = await storage.getItem<Array<CreateUserRequest>>("users") ?? []
+  console.log(`Body: ${JSON.stringify(body)}`);
 
-    const user = users.find(u => u.email === body.email)
+  const users =
+    (await storage.getItem<Array<CreateUserRequest>>("users")) ?? [];
 
-    if(!user || user.password !== body.password){
-        setResponseStatus(event, 400)
-    
-        return {
-            message: "Wrong credentials."
-        } 
-    }
+  const user = users.find((u) => u.email === body.email);
+
+  if (!user || user.password !== body.password) {
+    setResponseStatus(event, 400);
 
     return {
-        token: `valid-token-${user.email}`
-    }
-})
+      message: "Wrong credentials.",
+    };
+  }
+
+  return {
+    token: `valid-token-${user.email}`,
+  };
+});

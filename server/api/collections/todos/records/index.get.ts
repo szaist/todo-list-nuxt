@@ -1,34 +1,34 @@
-import { Todo } from "~/app/models/Todo"
+import { Todo } from "~/app/models/Todo";
 
 export default defineEventHandler(async (event) => {
-    const storage = useStorage('db')
+  const storage = useStorage("db");
 
-    const query = getQuery(event)
+  const query = getQuery(event);
 
-    const page = query?.page as number ?? 1
-    const perPage = query?.perPage as number ?? 10
-    const sort = query?.sort ?? '-created'
+  const page = (query?.page as number) ?? 1;
+  const perPage = (query?.perPage as number) ?? 10;
+  const sort = query?.sort ?? "-created";
 
-    //TODO: Body validation
+  //TODO: Body validation
 
-    console.log(`Query: ${JSON.stringify(query)}`);
-    
-    const todos = await storage.getItem<Array<Todo>>("todos") ?? []
+  console.log(`Query: ${JSON.stringify(query)}`);
 
-    const startIndex = (page - 1) * perPage
-    const endIndex = startIndex + perPage
+  const todos = (await storage.getItem<Array<Todo>>("todos")) ?? [];
 
-    const pageItems = todos.slice(startIndex, endIndex)
+  const startIndex = (page - 1) * perPage;
+  const endIndex = startIndex + perPage;
 
-    const totalPages = Math.ceil(todos.length / perPage)    
+  const pageItems = todos.slice(startIndex, endIndex);
 
-    setResponseStatus(event, 200)
-    return {
-        todos: pageItems,
-        pagination: {
-            currentPage: page * 1,
-            totalCount: todos.length,
-            totalPages: totalPages,
-        }
-    }
-})
+  const totalPages = Math.ceil(todos.length / perPage);
+
+  setResponseStatus(event, 200);
+  return {
+    todos: pageItems,
+    pagination: {
+      currentPage: page * 1,
+      totalCount: todos.length,
+      totalPages: totalPages,
+    },
+  };
+});

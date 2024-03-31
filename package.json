@@ -7,7 +7,9 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@pinia/nuxt": "^0.5.1",
@@ -22,8 +24,12 @@
     "yup": "^1.4.0"
   },
   "devDependencies": {
+    "@nuxt/eslint-config": "^0.2.0",
     "@types/uuid": "^9.0.8",
     "autoprefixer": "^10.4.19",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
     "nuxt-primevue": "^0.3.1",
     "postcss": "^8.4.38",
     "prettier": "^3.2.5",

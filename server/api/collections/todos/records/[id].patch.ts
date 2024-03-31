@@ -1,37 +1,36 @@
-import { UpdateTodoRequest } from "~/app/contracts/todo/UpdateTodoRequest"
-import { Todo } from "~/app/models/Todo"
+import { UpdateTodoRequest } from "~/app/contracts/todo/UpdateTodoRequest";
+import { Todo } from "~/app/models/Todo";
 
 export default defineEventHandler(async (event) => {
-    const storage = useStorage('db')
+  const storage = useStorage("db");
 
-    const id = getRouterParam(event, "id")
-    const body = await readBody<UpdateTodoRequest>(event)
+  const id = getRouterParam(event, "id");
+  const body = await readBody<UpdateTodoRequest>(event);
 
-    //TODO: Body validation
+  //TODO: Body validation
 
-    console.log(`Param id: ${JSON.stringify(id)}`);
-    console.log(`Body: ${JSON.stringify(body)}`);
-    
-    
-    const todos = await storage.getItem<Array<Todo>>("todos") ?? []
+  console.log(`Param id: ${JSON.stringify(id)}`);
+  console.log(`Body: ${JSON.stringify(body)}`);
 
-    let todoIndex = todos.findIndex(t => t.id === id)
+  const todos = (await storage.getItem<Array<Todo>>("todos")) ?? [];
 
-    if(todoIndex === -1) {
-        setResponseStatus(event, 404)
-        return {
-            message: "Todo was not found."
-        }
-    }
+  const todoIndex = todos.findIndex((t) => t.id === id);
 
-    const newTodo = {...todos[todoIndex], ...body} 
-
-    todos.splice(todoIndex, 1, newTodo)
-
-    await storage.setItem("todos", todos)
-
-    setResponseStatus(event, 200)
+  if (todoIndex === -1) {
+    setResponseStatus(event, 404);
     return {
-        ...newTodo,
-    }
-})
+      message: "Todo was not found.",
+    };
+  }
+
+  const newTodo = { ...todos[todoIndex], ...body };
+
+  todos.splice(todoIndex, 1, newTodo);
+
+  await storage.setItem("todos", todos);
+
+  setResponseStatus(event, 200);
+  return {
+    ...newTodo,
+  };
+});

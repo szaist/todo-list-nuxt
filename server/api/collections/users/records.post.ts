@@ -1,31 +1,32 @@
 import { CreateUserRequest } from "~/app/contracts/auth/CreateUserRequest";
 
 export default defineEventHandler(async (event) => {
-    const storage = useStorage('db')
+  const storage = useStorage("db");
 
-    const body = await readBody<CreateUserRequest>(event)
+  const body = await readBody<CreateUserRequest>(event);
 
-    //TODO: Body validation
+  //TODO: Body validation
 
-    console.log(`Body: ${JSON.stringify(body)}`);
-    
-    const users = await storage.getItem<Array<CreateUserRequest>>("users") ?? []
+  console.log(`Body: ${JSON.stringify(body)}`);
 
-    const user = users.find(u => u.email === body.email)
+  const users =
+    (await storage.getItem<Array<CreateUserRequest>>("users")) ?? [];
 
-    if(user) {
-        setResponseStatus(event, 400)
-        return {
-            message: "Email is already in use."
-        }
-    }
+  const user = users.find((u) => u.email === body.email);
 
-    users.push(body)
-
-    await storage.setItem("users", users)
-
+  if (user) {
+    setResponseStatus(event, 400);
     return {
-        status: 200,
-        message: 'OK'
-    }
-})
+      message: "Email is already in use.",
+    };
+  }
+
+  users.push(body);
+
+  await storage.setItem("users", users);
+
+  return {
+    status: 200,
+    message: "OK",
+  };
+});

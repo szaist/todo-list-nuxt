@@ -1,27 +1,27 @@
 import { Todo } from "~/app/models/Todo";
 
 export default defineEventHandler(async (event) => {
-    const storage = useStorage('db')
+  const storage = useStorage("db");
 
-    const id = getRouterParam(event, "id")
+  const id = getRouterParam(event, "id");
 
-    //TODO: Body validation
+  //TODO: Body validation
 
-    console.log(`Param ID: ${JSON.stringify(id)}`);
-    
-    const todos = await storage.getItem<Array<Todo>>("todos") ?? []
+  console.log(`Param ID: ${JSON.stringify(id)}`);
 
-    const newTodos = todos.filter(t => t.id !== id)
+  const todos = (await storage.getItem<Array<Todo>>("todos")) ?? [];
 
-    if(todos.length === newTodos.length){
-        setResponseStatus(event, 404)
-        return {
-            message: "Todo was not found."
-        }
-    }
+  const newTodos = todos.filter((t) => t.id !== id);
 
-    await storage.setItem("todos", newTodos)
+  if (todos.length === newTodos.length) {
+    setResponseStatus(event, 404);
+    return {
+      message: "Todo was not found.",
+    };
+  }
 
-    setResponseStatus(event, 200)
-    return {}
-})
+  await storage.setItem("todos", newTodos);
+
+  setResponseStatus(event, 200);
+  return {};
+});
