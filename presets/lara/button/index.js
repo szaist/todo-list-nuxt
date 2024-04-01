@@ -255,8 +255,8 @@ export default {
           props.outlined && props.severity === "danger" && !props.plain,
       },
 
-      // --- Severity Button States ---
-      "focus:outline-none focus:outline-offset-0 focus:ring",
+      // // --- Severity Button States ---
+      // "focus:outline-none focus:outline-offset-0 focus:ring",
 
       // Link
       {
@@ -283,10 +283,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-primary-400/50 dark:focus:ring-primary-300/50":
-          props.severity === null,
-      },
+      // {
+      //   "focus:ring-primary-400/50 dark:focus:ring-primary-300/50":
+      //     props.severity === null,
+      // },
       // Text & Outlined Button
       {
         "hover:bg-primary-300/20":
@@ -303,10 +303,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-surface-400/50 dark:focus:ring-surface-300/50":
-          props.severity === "secondary",
-      },
+      // {
+      //   "focus:ring-surface-400/50 dark:focus:ring-surface-300/50":
+      //     props.severity === "secondary",
+      // },
       // Text & Outlined Button
       {
         "hover:bg-surface-300/20":
@@ -323,10 +323,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-green-400/50 dark:focus:ring-green-300/50":
-          props.severity === "success",
-      },
+      // {
+      //   "focus:ring-green-400/50 dark:focus:ring-green-300/50":
+      //     props.severity === "success",
+      // },
       // Text & Outlined Button
       {
         "hover:bg-green-300/20":
@@ -343,10 +343,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-blue-400/50 dark:focus:ring-blue-300/50":
-          props.severity === "info",
-      },
+      // {
+      //   "focus:ring-blue-400/50 dark:focus:ring-blue-300/50":
+      //     props.severity === "info",
+      // },
       // Text & Outlined Button
       {
         "hover:bg-blue-300/20":
@@ -363,10 +363,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-orange-400/50 dark:focus:ring-orange-300/50":
-          props.severity === "warning",
-      },
+      // {
+      //   "focus:ring-orange-400/50 dark:focus:ring-orange-300/50":
+      //     props.severity === "warning",
+      // },
       // Text & Outlined Button
       {
         "hover:bg-orange-300/20":
@@ -383,10 +383,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-purple-400/50 dark:focus:ring-purple-300/50":
-          props.severity === "help",
-      },
+      // {
+      //   "focus:ring-purple-400/50 dark:focus:ring-purple-300/50":
+      //     props.severity === "help",
+      // },
       // Text & Outlined Button
       {
         "hover:bg-purple-300/20":
@@ -403,10 +403,10 @@ export default {
           !props.outlined &&
           !props.plain,
       },
-      {
-        "focus:ring-red-400/50 dark:focus:ring-red-300/50":
-          props.severity === "danger",
-      },
+      // {
+      //   "focus:ring-red-400/50 dark:focus:ring-red-300/50":
+      //     props.severity === "danger",
+      // },
       // Text & Outlined Button
       {
         "hover:bg-red-300/20":

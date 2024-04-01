@@ -102,7 +102,7 @@ const register = async () => {
             <nuxt-link to="/auth/login"
               >Already have an account? Login here</nuxt-link
             >
-            <Button :loading="isLoading" @click="register">Login</Button>
+            <Button :loading="isLoading" @click="register">Register</Button>
           </div>
         </div>
       </template>

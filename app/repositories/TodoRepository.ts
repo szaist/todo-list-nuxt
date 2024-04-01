@@ -25,7 +25,7 @@ export class TodoRepositoryAPI implements TodoRepository {
 
   async create(request: CreateTodoRequest): Promise<AxiosResponse<Todo>> {
     return await axios.post(`${this.API_URL}/collections/todos/records`, {
-      body: request,
+      ...request,
     });
   }
   async list(
@@ -50,7 +50,7 @@ export class TodoRepositoryAPI implements TodoRepository {
     return await axios.patch(
       `${this.API_URL}/collections/todos/records/${todoId}`,
       {
-        body: request,
+        ...request,
       },
     );
   }

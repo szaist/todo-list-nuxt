@@ -5,6 +5,7 @@ import type { Todo } from "~/app/models/Todo";
 import { SIDE } from "~/app/types";
 import TodoAddDialog from "~/components/TodoAddDialog.vue";
 import TodoItemSkeleton from "./skeletons/TodoItemSkeleton.vue";
+import TodoEditDialog from "./TodoEditDialog.vue";
 
 const todoStore = useTodoStore();
 
@@ -138,6 +139,18 @@ const openAddTaskDialog = () => {
     },
   });
 };
+
+const openEditTaskDialog = (todoId: string) => {
+  dialog.open(TodoEditDialog, {
+    props: {
+      modal: true,
+      header: "Edit task",
+    },
+    data: {
+      todoId: todoId,
+    },
+  });
+};
 </script>
 <template>
   <div>
@@ -166,7 +179,7 @@ const openAddTaskDialog = () => {
       </div>
     </div>
     <div v-if="isLoading">
-      <TodoItemSkeleton v-for="i in 4" />
+      <TodoItemSkeleton v-for="i in 4" :key="i" />
     </div>
     <DataView v-else :value="todoStore.todos" data-key="id">
       <template #list="slotProps">
@@ -179,16 +192,19 @@ const openAddTaskDialog = () => {
             @toggle-completed="() => toggleCompleted(item.id, item)"
             @toggle-favorite="() => toggleFavorite(item.id, item)"
             @delete-todo="deleteTodo"
+            @edit="openEditTaskDialog"
           />
         </template>
       </template>
       <template #empty>
         <div class="mt-4 flex items-center justify-center">
-          <h2 class="text-2xl">There is no task in the database</h2>
+          <h2 class="my-10 text-2xl">
+            There is no task in the database on this page
+          </h2>
         </div>
       </template>
       <template #footer>
-        <div class="flex justify-between">
+        <div class="flex items-center justify-between">
           <Button
             icon="pi pi-angle-left"
             label="Previous page"
@@ -196,6 +212,9 @@ const openAddTaskDialog = () => {
             :disabled="isFirstPage"
             @click="prevPage"
           />
+          <div class="rounded-full text-2xl text-white">
+            {{ todoStore.pagination.currentPage }}
+          </div>
           <Button
             icon="pi pi-angle-right"
             label="Next page"

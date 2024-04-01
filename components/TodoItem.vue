@@ -14,6 +14,7 @@ const emit = defineEmits([
   "toggleCompleted",
   "toggleFavorite",
   "deleteTodo",
+  "edit",
 ]);
 
 const dateOptions = computed<Intl.DateTimeFormatOptions>(() => ({
@@ -24,7 +25,6 @@ const dateOptions = computed<Intl.DateTimeFormatOptions>(() => ({
   minute: "numeric",
 }));
 
-const router = useRouter();
 const confirm = useConfirm();
 
 const onDrop = (event: DragEvent, index: number, side: SIDE) => {
@@ -43,8 +43,8 @@ const toggleFavorite = () => {
   emit("toggleFavorite");
 };
 
-const navigateToEdit = () => {
-  router.push(`/todo/${props.item.id}`);
+const edit = () => {
+  emit("edit", props.item.id);
 };
 
 const deleteTodo = () => {
@@ -98,7 +98,7 @@ const deleteTodo = () => {
             aria-label="Edit"
             icon="pi pi-pencil"
             severity="info"
-            @click.stop="navigateToEdit"
+            @click.stop="edit"
           />
           <Button
             v-tooltip.bottom="{
