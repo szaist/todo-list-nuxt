@@ -212,7 +212,7 @@ const openEditTaskDialog = (todoId: string) => {
             :disabled="isFirstPage"
             @click="prevPage"
           />
-          <div class="rounded-full text-2xl text-white">
+          <div class="rounded-full text-2xl text-black dark:text-white">
             {{ todoStore.pagination.currentPage }}
           </div>
           <Button
