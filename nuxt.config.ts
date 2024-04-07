@@ -1,11 +1,11 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   devtools: { enabled: true },
-  modules: ["nuxt-primevue", "@pinia/nuxt"],
+  modules: ['nuxt-primevue', '@pinia/nuxt', '@nuxtjs/eslint-module'],
   css: [
-    "~/assets/css/main.css",
-    "~/assets/css/variables.css",
-    "primeicons/primeicons.css",
+    '~/assets/css/main.css',
+    '~/assets/css/variables.css',
+    'primeicons/primeicons.css',
   ],
   postcss: {
     plugins: {
@@ -13,9 +13,12 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+  imports: {
+    dirs: ['composables', 'composables/**'],
+  },
   primevue: {
     unstyled: true,
-    importPT: { from: "~/presets/lara/" },
+    importPT: { from: '~/presets/lara/' },
   },
   runtimeConfig: {
     public: {
@@ -25,9 +28,9 @@ export default defineNuxtConfig({
   nitro: {
     storage: {
       db: {
-        driver: "fs",
-        base: "./app/data/db",
+        driver: 'fs',
+        base: './app/data/db',
       },
     },
   },
-});
+})
