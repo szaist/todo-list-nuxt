@@ -1,42 +1,40 @@
 <script setup lang="ts">
-import type { UpdateTodoRequest } from "~/app/contracts/todo/UpdateTodoRequest";
-import type { Todo } from "~/app/models/Todo";
-import { Priority } from "~/app/types";
-import { CreateTodoValidation } from "~/app/validation/TodoValidation";
-import { ValidationError } from "yup";
-import type { DynamicDialogInstance } from "primevue/dynamicdialogoptions";
+import type { UpdateTodoRequest } from '~/app/contracts/todo/UpdateTodoRequest'
+import type { Todo } from '~/app/models/Todo'
+import { Priority } from '~/app/types'
+import { CreateTodoValidation } from '~/app/validation/TodoValidation'
+import { ValidationError } from 'yup'
+import type { DynamicDialogInstance } from 'primevue/dynamicdialogoptions'
 
-const todoId = ref<string>("");
-const todoStore = useTodoStore();
-const router = useRouter();
-const dialogRef = inject<Ref<DynamicDialogInstance>>("dialogRef");
+const todoId = ref<string>('')
+const todoStore = useTodoStore()
+const dialogRef = inject<Ref<DynamicDialogInstance>>('dialogRef')
 
-const isLoading = ref<boolean>(true);
+const isLoading = ref<boolean>(true)
 
-const currentTodo = ref<Todo>();
+const currentTodo = ref<Todo>()
 
-const needDeadline = ref<boolean>();
+const needDeadline = ref<boolean>()
 
-const errors = ref<Record<string, string>>({});
+const errors = ref<Record<string, string>>({})
 
-const priorityOptions = computed(() => Object.values(Priority));
+const priorityOptions = computed(() => Object.values(Priority))
 
 onMounted(async () => {
-  todoId.value = dialogRef?.value.data.todoId;
+  todoId.value = dialogRef?.value.data.todoId
 
-  isLoading.value = true;
+  isLoading.value = true
 
-  const todo = todoStore.getTodoById(todoId.value);
-  console.log(todo);
+  const todo = deepCopy(todoStore.getTodoById(todoId.value))
 
-  currentTodo.value = todo;
-  needDeadline.value = !!currentTodo.value?.deadline;
+  currentTodo.value = todo
+  needDeadline.value = !!currentTodo.value?.deadline
 
-  isLoading.value = false;
-});
+  isLoading.value = false
+})
 
 const save = async () => {
-  if (currentTodo.value === undefined) return;
+  if (currentTodo.value === undefined) return
 
   const request: UpdateTodoRequest = {
     title: currentTodo.value?.title,
@@ -45,37 +43,40 @@ const save = async () => {
     description: currentTodo.value.description,
     fav: currentTodo.value.fav,
     priority: currentTodo.value.priority,
-  };
+  }
 
   if (needDeadline.value) {
-    request.deadline = currentTodo.value.deadline;
+    request.deadline = currentTodo.value.deadline
   }
 
   try {
-    errors.value = {};
-    await CreateTodoValidation.validate(request, { abortEarly: false });
+    errors.value = {}
+    await CreateTodoValidation.validate(request, { abortEarly: false })
   } catch (error) {
-    const err = error as ValidationError;
+    const err = error as ValidationError
 
-    err.inner.forEach((e) => {
-      const name = e.path ?? "";
-      errors.value[name] = e.message;
-    });
-    return;
+    err.inner.forEach(e => {
+      const name = e.path ?? ''
+      errors.value[name] = e.message
+    })
+    return
   }
 
   try {
-    await todoStore.patchTodo(todoId.value, request);
+    await todoStore.patchTodo(todoId.value, request)
 
-    dialogRef?.value.close();
+    dialogRef?.value.close()
   } catch (error) {
-    console.log("save: ", error);
+    console.log('save: ', error)
   }
-};
+}
 </script>
 <template>
   <div class="container">
-    <div v-if="currentTodo" class="flex items-center justify-between">
+    <div
+      v-if="currentTodo"
+      class="flex items-center justify-between"
+    >
       <div>Task - {{ currentTodo.title }}</div>
       <div class="flex">
         <Button
@@ -94,7 +95,10 @@ const save = async () => {
         />
       </div>
     </div>
-    <div v-if="currentTodo" class="flex flex-col gap-6">
+    <div
+      v-if="currentTodo"
+      class="flex flex-col gap-6"
+    >
       <div class="flex flex-col gap-2">
         <label for="title">Title</label>
         <InputText
@@ -103,9 +107,11 @@ const save = async () => {
           :disabled="isLoading"
           :invalid="!!errors?.title"
         />
-        <InlineMessage v-if="errors?.title" severity="error">{{
-          errors.title
-        }}</InlineMessage>
+        <InlineMessage
+          v-if="errors?.title"
+          severity="error"
+          >{{ errors.title }}</InlineMessage
+        >
       </div>
       <div class="flex flex-col gap-2">
         <label for="description">Description</label>
@@ -122,7 +128,12 @@ const save = async () => {
           input-id="completed"
           :disabled="isLoading"
         />
-        <label for="completed" class="ml-2"> Completed </label>
+        <label
+          for="completed"
+          class="ml-2"
+        >
+          Completed
+        </label>
       </div>
       <div class="flex flex-col gap-2">
         <div>
@@ -132,7 +143,11 @@ const save = async () => {
             input-id="deadline"
             :disabled="isLoading"
           />
-          <label for="deadline" class="ml-2">Need deadline?</label>
+          <label
+            for="deadline"
+            class="ml-2"
+            >Need deadline?</label
+          >
         </div>
         <Calendar
           v-model="currentTodo.deadline"
@@ -171,7 +186,11 @@ const save = async () => {
         </div>
       </div>
       <div class="flex justify-end">
-        <Button :loading="isLoading" @click="save">Save</Button>
+        <Button
+          :loading="isLoading"
+          @click="save"
+          >Save</Button
+        >
       </div>
     </div>
   </div>

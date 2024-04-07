@@ -1,48 +1,49 @@
 <script setup lang="ts">
-import type { LoginUserRequest } from "~/app/contracts/auth/LoginUserRequest";
-import { AuthRepositoryAPI } from "~/app/repositories/AuthRepository";
-import { LoginFormValidation } from "~/app/validation/AuthValidation";
-import { ValidationError } from "yup";
+import type { LoginUserRequest } from '~/app/contracts/auth/LoginUserRequest'
+import { LoginFormValidation } from '~/app/validation/AuthValidation'
+import { ValidationError } from 'yup'
+import { useLogin } from '~/composables/auth/useLogin'
 
-const authStore = useAuthStore();
-const authRepository = new AuthRepositoryAPI();
-
-const router = useRouter();
+const authStore = useAuthStore()
 
 const form = ref<LoginUserRequest>({
-  email: "",
-  password: "",
-});
-const errors = ref<Record<string, string>>({});
+  identity: '',
+  password: '',
+})
+const errors = ref<Record<string, string>>({})
 
-const isLoading = ref<boolean>(false);
+const isLoading = ref<boolean>(false)
 
 const login = async () => {
   try {
-    errors.value = {};
-    await LoginFormValidation.validate(form.value, { abortEarly: false });
-  } catch (error) {
-    const err = error as ValidationError;
+    isLoading.value = true
+    errors.value = {}
 
-    err.inner.forEach((e) => {
-      const name = e.path ?? "";
-      errors.value[name] = e.message;
-    });
-    return;
+    await LoginFormValidation.validate(form.value, {
+      abortEarly: false,
+    }).catch(err => {
+      errors.value = useExtractYupValidationErrors(err as ValidationError)
+    })
+
+    if (Object.values(errors.value).length > 0) {
+      isLoading.value = false
+      return
+    }
+
+    const { record: user, token } = await useLogin(form.value)
+
+    authStore.setToken(token)
+    authStore.setUser(user)
+
+    navigateTo('/')
+  } catch (error: any) {
+    errors.value = useExtractApiValidationErrors(error)
+    if (error.data.code === 400 && Object.keys(error.data.data).length === 0) {
+      errors.value.wrongCredentials = 'Wrong email or password!'
+    }
   }
-
-  try {
-    isLoading.value = true;
-    const response = await authRepository.login(form.value);
-
-    authStore.setToken(response.data.token);
-    router.push("/");
-  } catch (error) {
-    console.log("ERROR: ", error);
-  }
-
-  isLoading.value = false;
-};
+  isLoading.value = false
+}
 </script>
 <template>
   <div class="container mt-10 flex items-center justify-center">
@@ -50,17 +51,22 @@ const login = async () => {
       <template #title> Log In </template>
       <template #content>
         <div class="flex flex-col gap-4">
+          <InlineMessage v-if="errors?.wrongCredentials">
+            {{ errors.wrongCredentials }}
+          </InlineMessage>
           <div class="flex flex-col gap-2">
-            <label for="email">Email</label>
+            <label for="identity">Email</label>
             <InputText
-              id="email"
-              v-model="form.email"
+              id="identity"
+              v-model="form.identity"
               :disabled="isLoading"
-              :invalid="!!errors.email"
+              :invalid="!!errors.identity"
             />
-            <InlineMessage v-if="errors?.email" severity="error">{{
-              errors.email
-            }}</InlineMessage>
+            <InlineMessage
+              v-if="errors?.identity"
+              severity="error"
+              >{{ errors.identity }}</InlineMessage
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label for="password">Password</label>
@@ -71,15 +77,21 @@ const login = async () => {
               :disabled="isLoading"
               :invalid="!!errors.password"
             />
-            <InlineMessage v-if="errors?.password" severity="error">{{
-              errors.password
-            }}</InlineMessage>
+            <InlineMessage
+              v-if="errors?.password"
+              severity="error"
+              >{{ errors.password }}</InlineMessage
+            >
           </div>
           <div class="flex items-center justify-between">
             <nuxt-link to="/auth/register"
               >Don't have an account? Register here</nuxt-link
             >
-            <Button :loading="isLoading" @click="login">Login</Button>
+            <Button
+              :loading="isLoading"
+              @click="login"
+              >Login</Button
+            >
           </div>
         </div>
       </template>

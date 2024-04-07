@@ -1,47 +1,46 @@
 <script setup lang="ts">
-import { AuthRepositoryAPI } from "~/app/repositories/AuthRepository";
-import { RegisterFormValidation } from "~/app/validation/AuthValidation";
-import { ValidationError } from "yup";
-import type { CreateUserRequest } from "~/app/contracts/auth/CreateUserRequest";
-
-const authRepository = new AuthRepositoryAPI();
-
-const router = useRouter();
+import { RegisterFormValidation } from '~/app/validation/AuthValidation'
+import type { CreateUserRequest } from '~/app/contracts/auth/CreateUserRequest'
+import { useRegister } from '~/composables/auth/useRegister'
+import type { ValidationError } from 'yup'
 
 const form = ref<CreateUserRequest>({
-  email: "",
-  password: "",
-  first_name: "",
-  last_name: "",
-});
-const errors = ref<Record<string, string>>({});
+  email: '',
+  password: '',
+  passwordConfirm: '',
+  first_name: '',
+  last_name: '',
+})
 
-const isLoading = ref<boolean>(false);
+const isLoading = ref<boolean>(false)
+
+const errors = ref<Record<string, string>>({})
 
 const register = async () => {
   try {
-    errors.value = {};
-    await RegisterFormValidation.validate(form.value, { abortEarly: false });
-  } catch (error) {
-    const err = error as ValidationError;
+    isLoading.value = true
+    errors.value = {}
 
-    err.inner.forEach((e) => {
-      const name = e.path ?? "";
-      errors.value[name] = e.message;
-    });
-    return;
+    await RegisterFormValidation.validate(form.value, {
+      abortEarly: false,
+    }).catch(err => {
+      errors.value = useExtractYupValidationErrors(err as ValidationError)
+    })
+
+    if (Object.values(errors.value).length > 0) {
+      isLoading.value = false
+      return
+    }
+
+    await useRegister(form.value)
+    navigateTo('/auth/login')
+  } catch (error: any) {
+    errors.value = useExtractApiValidationErrors(error)
+
+    console.log(errors.value)
   }
-
-  try {
-    isLoading.value = true;
-    await authRepository.register(form.value);
-    router.push("/auth/login");
-  } catch (error) {
-    console.log("ERROR: ", error);
-  }
-
-  isLoading.value = false;
-};
+  isLoading.value = false
+}
 </script>
 <template>
   <div class="container mt-10 flex items-center justify-center">
@@ -57,9 +56,11 @@ const register = async () => {
               :disabled="isLoading"
               :invalid="!!errors.email"
             />
-            <InlineMessage v-if="errors?.email" severity="error">{{
-              errors.email
-            }}</InlineMessage>
+            <InlineMessage
+              v-if="errors?.email"
+              severity="error"
+              >{{ errors.email }}</InlineMessage
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label for="password">Password</label>
@@ -70,9 +71,26 @@ const register = async () => {
               :disabled="isLoading"
               :invalid="!!errors.password"
             />
-            <InlineMessage v-if="errors?.password" severity="error">{{
-              errors.password
-            }}</InlineMessage>
+            <InlineMessage
+              v-if="errors?.password"
+              severity="error"
+              >{{ errors.password }}</InlineMessage
+            >
+          </div>
+          <div class="flex flex-col gap-2">
+            <label for="passwordConfirm">Password confirmation</label>
+            <Password
+              id="passwordConfirm"
+              v-model="form.passwordConfirm"
+              :feedback="false"
+              :disabled="isLoading"
+              :invalid="!!errors.passwordConfirm"
+            />
+            <InlineMessage
+              v-if="errors?.passwordConfirm"
+              severity="error"
+              >{{ errors.passwordConfirm }}</InlineMessage
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label for="firstname">First name</label>
@@ -82,9 +100,11 @@ const register = async () => {
               :disabled="isLoading"
               :invalid="!!errors.first_name"
             />
-            <InlineMessage v-if="errors?.first_name" severity="error">{{
-              errors.first_name
-            }}</InlineMessage>
+            <InlineMessage
+              v-if="errors?.first_name"
+              severity="error"
+              >{{ errors.first_name }}</InlineMessage
+            >
           </div>
           <div class="flex flex-col gap-2">
             <label for="lastname">Last name</label>
@@ -94,15 +114,22 @@ const register = async () => {
               :disabled="isLoading"
               :invalid="!!errors.last_name"
             />
-            <InlineMessage v-if="errors?.last_name" severity="error">{{
-              errors.last_name
-            }}</InlineMessage>
+            <InlineMessage
+              v-if="errors?.last_name"
+              severity="error"
+              >{{ errors.last_name }}</InlineMessage
+            >
           </div>
           <div class="flex items-center justify-between">
             <nuxt-link to="/auth/login"
               >Already have an account? Login here</nuxt-link
             >
-            <Button :loading="isLoading" @click="register">Register</Button>
+            <Button
+              :loading="isLoading"
+              @click="register"
+            >
+              Register
+            </Button>
           </div>
         </div>
       </template>

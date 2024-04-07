@@ -1,5 +1,5 @@
-import { boolean, mixed, number, object, string } from "yup";
-import { Priority } from "../types";
+import { boolean, mixed, number, object, string } from 'yup'
+import { Priority } from '../types'
 
 export const CreateTodoValidation = object().shape({
   title: string().required(),
@@ -8,4 +8,4 @@ export const CreateTodoValidation = object().shape({
   priority: mixed<Priority>().oneOf(Object.values(Priority)).required(),
   completed: boolean(),
   fav: boolean(),
-});
+})

@@ -1,11 +1,11 @@
-import type { Priority } from "~/app/types";
+import type { Priority } from '~/app/types'
 
 export type UpdateTodoRequest = {
-  title: string;
-  description?: string;
-  priority?: Priority;
-  deadline?: Date;
-  completed?: boolean;
-  order: number;
-  fav?: boolean;
-};
+  title: string
+  description?: string
+  priority?: Priority
+  deadline?: Date
+  completed?: boolean
+  order: number
+  fav?: boolean
+}

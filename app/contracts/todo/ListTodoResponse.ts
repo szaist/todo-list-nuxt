@@ -1,11 +1,12 @@
-import type { Todo } from "~/app/models/Todo";
+import type { Todo } from '~/app/models/Todo'
 
-export type ListTodoResponse = {
-  todos: Todo[];
-  pagination: Pagination;
-};
+export type ListTodoResponse = Pagination & {
+  items: Todo[]
+}
 
 export type Pagination = {
-  currentPage: number;
-  perPage: number;
-};
+  page: number
+  perPage: number
+  totalItems: number
+  totalPages: number
+}

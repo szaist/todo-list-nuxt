@@ -1,63 +1,56 @@
 <script lang="ts" setup>
-import type { Todo } from "~/app/models/Todo";
-import { SIDE, Priority } from "~/app/types";
+import type { Todo } from '~/app/models/Todo'
+import { SIDE, Priority } from '~/app/types'
 
 interface Props {
-  item: Todo;
-  index: number;
+  item: Todo
+  index: number
 }
-
-const props = defineProps<Props>();
-const emit = defineEmits([
-  "drop",
-  "dragstart",
-  "toggleCompleted",
-  "toggleFavorite",
-  "deleteTodo",
-  "edit",
-]);
+const todoStore = useTodoStore()
+const props = defineProps<Props>()
+const emit = defineEmits(['drop', 'dragstart', 'edit'])
 
 const dateOptions = computed<Intl.DateTimeFormatOptions>(() => ({
-  year: "numeric",
-  month: "numeric",
-  day: "numeric",
-  hour: "numeric",
-  minute: "numeric",
-}));
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+}))
 
-const confirm = useConfirm();
+const confirm = useConfirm()
 
 const onDrop = (event: DragEvent, index: number, side: SIDE) => {
-  emit("drop", event, index, side);
-};
+  emit('drop', event, index, side)
+}
 
 const startDrag = (event: DragEvent, item: Todo) => {
-  emit("dragstart", event, item);
-};
+  emit('dragstart', event, item)
+}
 
 const toggleCompleted = () => {
-  emit("toggleCompleted");
-};
+  todoStore.toggleCompleted(props.item.id)
+}
 
 const toggleFavorite = () => {
-  emit("toggleFavorite");
-};
+  todoStore.toggleFavorite(props.item.id)
+}
 
 const edit = () => {
-  emit("edit", props.item.id);
-};
+  emit('edit', props.item.id)
+}
 
 const deleteTodo = () => {
   confirm.require({
-    message: "Are you sure you want to delete this todo?",
-    header: "Confirmation",
-    rejectLabel: "Cancel",
-    acceptLabel: "Delete",
+    message: 'Are you sure you want to delete this todo?',
+    header: 'Confirmation',
+    rejectLabel: 'Cancel',
+    acceptLabel: 'Delete',
     accept: () => {
-      emit("deleteTodo", props.item.id);
+      todoStore.deleteTodo(props.item.id)
     },
-  });
-};
+  })
+}
 </script>
 
 <template>
@@ -130,8 +123,8 @@ const deleteTodo = () => {
       <div class="flex justify-end italic">
         {{
           item?.deadline
-            ? new Date(item.deadline).toLocaleString("en-US", dateOptions)
-            : ""
+            ? new Date(item.deadline).toLocaleString('en-US', dateOptions)
+            : ''
         }}
       </div>
     </div>
