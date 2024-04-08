@@ -2,6 +2,17 @@
 const authStore = useAuthStore()
 const { logout } = useLogout()
 
+const confirm = useConfirm()
+const requestLogout = () => {
+  confirm.require({
+    message: 'Are you sure you want to logout?',
+    header: 'Confirmation',
+    rejectLabel: 'Cancel',
+    acceptLabel: 'Logout',
+    accept: logout,
+  })
+}
+
 const fullName = computed(() => {
   return `${authStore.currentUser?.first_name} ${authStore.currentUser?.last_name}`
 })
@@ -28,7 +39,7 @@ const fullName = computed(() => {
       icon-class="pl-1"
       icon-pos="right"
       size="small"
-      @click="logout"
+      @click="requestLogout"
     />
   </div>
 </template>

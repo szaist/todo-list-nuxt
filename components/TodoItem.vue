@@ -18,8 +18,6 @@ const dateOptions = computed<Intl.DateTimeFormatOptions>(() => ({
   minute: 'numeric',
 }))
 
-const confirm = useConfirm()
-
 const onDrop = (event: DragEvent, index: number, side: SIDE) => {
   emit('drop', event, index, side)
 }
@@ -40,6 +38,7 @@ const edit = () => {
   emit('edit', props.item.id)
 }
 
+const confirm = useConfirm()
 const deleteTodo = () => {
   confirm.require({
     message: 'Are you sure you want to delete this todo?',
