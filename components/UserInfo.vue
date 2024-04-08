@@ -14,7 +14,9 @@ const requestLogout = () => {
 }
 
 const fullName = computed(() => {
-  return `${authStore.currentUser?.first_name} ${authStore.currentUser?.last_name}`
+  return authStore.currentUser?.first_name || authStore.currentUser?.last_name
+    ? `${authStore.currentUser?.first_name ?? ''} ${authStore.currentUser?.last_name ?? ''}`
+    : undefined
 })
 </script>
 <template>
