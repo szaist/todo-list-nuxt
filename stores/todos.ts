@@ -62,18 +62,15 @@ export const useTodoStore = defineStore('todos', () => {
   }
 
   const patchTodo = async (todoId: string, request: UpdateTodoRequest) => {
-    try {
-      setLoading(true)
-      await usePatchTodo(todoId, request)
+    setLoading(true)
+    await usePatchTodo(todoId, request)
 
-      const todoIndex = todos.value.findIndex((t: Todo) => t.id === todoId)
-      todos.value[todoIndex] = {
-        ...todos.value[todoIndex],
-        ...request,
-      }
-    } catch (error) {
-      console.log('patchTodo: ', error)
+    const todoIndex = todos.value.findIndex((t: Todo) => t.id === todoId)
+    todos.value[todoIndex] = {
+      ...todos.value[todoIndex],
+      ...request,
     }
+
     setLoading(false)
   }
 

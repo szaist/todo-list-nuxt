@@ -37,7 +37,7 @@ const save = async () => {
   if (currentTodo.value === undefined) return
 
   const request: UpdateTodoRequest = {
-    title: currentTodo.value?.title,
+    title: currentTodo.value.title,
     order: currentTodo.value.order,
     completed: currentTodo.value.completed,
     description: currentTodo.value.description,
@@ -51,23 +51,22 @@ const save = async () => {
 
   try {
     errors.value = {}
-    await CreateTodoValidation.validate(request, { abortEarly: false })
-  } catch (error) {
-    const err = error as ValidationError
+    await CreateTodoValidation.validate(request, { abortEarly: false }).catch(
+      err => {
+        errors.value = useExtractYupValidationErrors(err as ValidationError)
+      },
+    )
 
-    err.inner.forEach(e => {
-      const name = e.path ?? ''
-      errors.value[name] = e.message
-    })
-    return
-  }
+    if (Object.values(errors.value).length > 0) {
+      isLoading.value = false
+      return
+    }
 
-  try {
     await todoStore.patchTodo(todoId.value, request)
 
     dialogRef?.value.close()
   } catch (error) {
-    console.log('save: ', error)
+    errors.value = useExtractApiValidationErrors(error)
   }
 }
 </script>
